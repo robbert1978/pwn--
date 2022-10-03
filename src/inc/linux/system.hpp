@@ -6,7 +6,20 @@
 #include <optional>
 
 
-namespace pwn::linux::system
+namespace pwn::linux
 {
-	PWNAPI auto pagesize() -> u32;
+	class System
+	{
+	public:
+	static u32
+	PageSize();
+
+    static Result<std::string>
+    ComputerName();
+
+    static Result<std::string>
+    UserName();
+
+	private:
+	}
 }
