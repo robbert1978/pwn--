@@ -11,7 +11,7 @@
 /// Result<$anyType = int> MyFunction()
 /// {
 ///   if( $bad_case ){ return Err(ErrorCode::RuntimeError); }
-///   return Ok(1)
+///   return Ok(1);
 /// }
 
 enum class ErrorCode : uint32_t
@@ -90,6 +90,7 @@ struct Err : ErrorType
     }
 };
 
+
 template<class T>
 struct Ok : SuccessType<T>
 {
@@ -97,6 +98,7 @@ struct Ok : SuccessType<T>
     {
     }
 };
+
 
 template<class T>
 constexpr bool
@@ -108,6 +110,7 @@ Success(Result<T> const& f)
     }
     return false;
 }
+
 
 template<class T>
 constexpr bool
@@ -126,6 +129,7 @@ Failed(Result<T> const& f)
     throw std::bad_variant_access();
 }
 
+
 template<class T>
 constexpr T const&
 Value(Result<T> const& f)
@@ -136,6 +140,7 @@ Value(Result<T> const& f)
     }
     throw std::bad_variant_access();
 }
+
 
 template<class T>
 constexpr ErrorType const&
@@ -153,8 +158,8 @@ template<>
 struct std::formatter<ErrorType, char> : std::formatter<std::string, char>
 {
     auto
-    format(ErrorType const a, format_context& ctx)
+    format(ErrorType const err, format_context& ctx)
     {
-        return formatter<string, char>::format(std::format("ERROR_{}", a), ctx);
+        return formatter<string, char>::format(std::format("Error(code={},errno={})", err.code, err.number), ctx);
     }
 };
