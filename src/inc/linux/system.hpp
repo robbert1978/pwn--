@@ -8,18 +8,18 @@
 
 namespace pwn::linux
 {
-	class System
-	{
-	public:
-	static u32
-	PageSize();
+class System
+{
+public:
+static u32
+PageSize();
 
-    static Result<std::string>
-    ComputerName();
+static Result<std::string>
+ComputerName();
 
-    static Result<std::string>
-    UserName();
+static Result<std::string>
+UserName();
 
-	private:
-	}
+private:
+};
 }

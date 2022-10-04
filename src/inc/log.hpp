@@ -108,7 +108,11 @@ Log(const LogLevel level, std::string_view const& fmt, Args&&... args)
 {
     std::ostringstream msg;
     msg << std::vformat(fmt, std::make_format_args(args...)) << std::endl;
+#ifdef PWN_BUILD_FOR_WINDOWS
     Log(level, location, msg);
+#else
+    Log(level, msg);
+#endif // PWN_BUILD_FOR_WINDOWS
 }
 
 
