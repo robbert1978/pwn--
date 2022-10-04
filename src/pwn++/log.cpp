@@ -2,10 +2,6 @@
 
 #include <cassert>
 #include <cstdio>
-#include <format>
-#include <iostream>
-#include <string>
-#include <string_view>
 #include <vector>
 
 namespace pwn::log
@@ -41,11 +37,16 @@ GetPriorityString(const LogLevel level)
 
 
 void
+#ifdef PWN_BUILD_FOR_WINDOWS
 Log(const LogLevel level, std::source_location const& location, std::ostringstream& msg)
+#else
+Log(const LogLevel level, std::ostringstream& msg)
+#endif // PWN_BUILD_FOR_WINDOWS
 {
     std::ostringstream prefix;
     prefix << GetPriorityString(level);
 
+#ifdef PWN_BUILD_FOR_WINDOWS
     if ( level == LogLevel::Debug )
     {
         prefix << "{";
@@ -53,12 +54,12 @@ Log(const LogLevel level, std::source_location const& location, std::ostringstre
         prefix << location.function_name() << "()";
         prefix << "} ";
     }
+#endif // PWN_BUILD_FOR_WINDOWS
 
     std::cerr << prefix.str() << msg.str() << std::flush;
 }
 
 
-#ifdef PWN_BUILD_FOR_WINDOWS
 const wchar_t*
 GetPriorityWideString(const LogLevel level)
 {
@@ -94,11 +95,16 @@ GetPriorityWideString(const LogLevel level)
 
 
 void
+#ifdef PWN_BUILD_FOR_WINDOWS
 Log(const LogLevel level, std::source_location const& location, std::wostringstream& msg)
+#else
+Log(const LogLevel level, std::wostringstream& msg)
+#endif // PWN_BUILD_FOR_WINDOWS
 {
     std::wostringstream prefix;
     prefix << GetPriorityWideString(level);
 
+#ifdef PWN_BUILD_FOR_WINDOWS
     if ( level == LogLevel::Debug )
     {
         prefix << L"{";
@@ -106,17 +112,14 @@ Log(const LogLevel level, std::source_location const& location, std::wostringstr
         prefix << location.function_name() << L"()";
         prefix << L"} ";
     }
+#endif // PWN_BUILD_FOR_WINDOWS
 
     std::wcerr << prefix.str() << msg.str() << std::flush;
 }
 
 
-///
-/// @brief perror() style of function for Windows
-///
-/// @param [in] prefix
-///
-void PWNAPI
+#ifdef PWN_BUILD_FOR_WINDOWS
+void
 perror(const std::wstring_view& prefix)
 {
     const u32 sysMsgSz = 1024;
@@ -181,7 +184,7 @@ ntperror(_In_ const std::string_view& prefix, _In_ NTSTATUS Status)
     log::perror(prefix);
 }
 
-#endif
+#endif // PWN_BUILD_FOR_WINDOWS
 
 
 } // namespace pwn::log
